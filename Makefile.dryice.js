@@ -390,6 +390,8 @@ function buildAce(options) {
             }],
         }, "worker-" + name);
     });
+    // tern
+    addTernWorker(options);
 }
 
 function getLoadedFileList(options, callback, result) {
@@ -548,6 +550,24 @@ function addSnippetFile(modeName) {
     }
     if (!fs.existsSync(snippetFilePath + ".snippets")) {
         fs.writeFileSync(snippetFilePath + ".snippets", "");
+    }
+}
+
+function addTernWorker(opts) {
+    var workerFilePath = ACE_HOME + "/lib/ace/worker-tern.js";
+    if (fs.existsSync(workerFilePath)) {
+        var source = fs.readFileSync(workerFilePath, "utf8");
+
+        var targetDir =  BUILD_DIR + "/src";
+        if (opts.compress)
+            targetDir += "-min";
+        if (opts.noconflict)
+            targetDir += "-noconflict";
+
+        if (!fs.existsSync(targetDir)) {
+            fs.mkdirSync(targetDir);
+        }
+        fs.writeFileSync(targetDir + "/worker-tern.js", source);
     }
 }
 
